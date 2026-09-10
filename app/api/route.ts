@@ -24,47 +24,16 @@ let todos = [
     title: 'Build an API',
     completed: true,
   },
-];
-
-// =======================================================
-// GET /api/todos
-// =======================================================
-//
-// Get all todos
-//
-// Example:
-//
-// GET http://localhost:3000/api/todos
-//
-// =======================================================
+]; // ======================================================= // GET /api/todos // ======================================================= // // Get all todos // // Example: // // GET http://localhost:3000/api/todos // // =======================================================
 
 export async function GET() {
   return Response.json(todos);
-}
+} // ======================================================= // POST /api/todos // ======================================================= // // Create a new todo // // Example: // // POST http://localhost:3000/api/todos // // Request body: // // { //   "title": "Learn React" // } // // =======================================================
 
-// =======================================================
-// POST /api/todos
-// =======================================================
-//
-// Create a new todo
-//
-// Example:
-//
-// POST http://localhost:3000/api/todos
-//
-// Request body:
-//
-// {
-//   "title": "Learn React"
-// }
-//
-// =======================================================
-
-export async function POST(request) {
+export async function POST(request:any) {
   // Read the JSON data sent by the client
-  const data = await request.json();
+  const data = await request.json(); // Basic validation
 
-  // Basic validation
   if (!data.title) {
     return Response.json(
       {
@@ -74,56 +43,27 @@ export async function POST(request) {
         status: 400,
       }
     );
-  }
+  } // Create a new todo
 
-  // Create a new todo
   const newTodo = {
     id: Date.now(),
     title: data.title,
     completed: false,
-  };
+  }; // Add the todo to our array
 
-  // Add the todo to our array
-  todos.push(newTodo);
+  todos.push(newTodo); // Send the newly created todo to the client
 
-  // Send the newly created todo to the client
   return Response.json(newTodo, {
     status: 201,
   });
-}
+} // ======================================================= // PATCH /api/todos?id=1 // ======================================================= // // Update a todo // // The todo ID is passed as a query parameter. // // Example: // // PATCH http://localhost:3000/api/todos?id=1 // // Request body: // // { //   "completed": true // } // // =======================================================
 
-// =======================================================
-// PATCH /api/todos?id=1
-// =======================================================
-//
-// Update a todo
-//
-// The todo ID is passed as a query parameter.
-//
-// Example:
-//
-// PATCH http://localhost:3000/api/todos?id=1
-//
-// Request body:
-//
-// {
-//   "completed": true
-// }
-//
-// =======================================================
-
-export async function PATCH(request) {
+export async function PATCH(request:any) {
   // Get the URL from the request
-  const url = new URL(request.url);
+  const url = new URL(request.url); // Get the "id" query parameter // // /api/todos?id=1 //              ↑ //
 
-  // Get the "id" query parameter
-  //
-  // /api/todos?id=1
-  //              ↑
-  //
-  const id = Number(url.searchParams.get('id'));
+  const id = Number(url.searchParams.get('id')); // Check whether an ID was provided
 
-  // Check whether an ID was provided
   if (!id) {
     return Response.json(
       {
@@ -133,15 +73,12 @@ export async function PATCH(request) {
         status: 400,
       }
     );
-  }
+  } // Read the data sent by the client
 
-  // Read the data sent by the client
-  const data = await request.json();
+  const data = await request.json(); // Find the todo
 
-  // Find the todo
-  const todo = todos.find((todo) => todo.id === id);
+  const todo = todos.find((todo) => todo.id === id); // Todo not found
 
-  // Todo not found
   if (!todo) {
     return Response.json(
       {
@@ -151,42 +88,25 @@ export async function PATCH(request) {
         status: 404,
       }
     );
-  }
+  } // Update the title if it was provided
 
-  // Update the title if it was provided
   if (data.title !== undefined) {
     todo.title = data.title;
-  }
+  } // Update completed if it was provided
 
-  // Update completed if it was provided
   if (data.completed !== undefined) {
     todo.completed = data.completed;
-  }
+  } // Return the updated todo
 
-  // Return the updated todo
   return Response.json(todo);
-}
+} // ======================================================= // DELETE /api/todos?id=1 // ======================================================= // // Delete a todo // // Example: // // DELETE http://localhost:3000/api/todos?id=1 // // =======================================================
 
-// =======================================================
-// DELETE /api/todos?id=1
-// =======================================================
-//
-// Delete a todo
-//
-// Example:
-//
-// DELETE http://localhost:3000/api/todos?id=1
-//
-// =======================================================
-
-export async function DELETE(request) {
+export async function DELETE(request:any) {
   // Get the URL from the request
-  const url = new URL(request.url);
+  const url = new URL(request.url); // Get the "id" query parameter
 
-  // Get the "id" query parameter
-  const id = Number(url.searchParams.get('id'));
+  const id = Number(url.searchParams.get('id')); // Check whether an ID was provided
 
-  // Check whether an ID was provided
   if (!id) {
     return Response.json(
       {
@@ -196,12 +116,10 @@ export async function DELETE(request) {
         status: 400,
       }
     );
-  }
+  } // Find the position of the todo in the array
 
-  // Find the position of the todo in the array
-  const todoIndex = todos.findIndex((todo) => todo.id === id);
+  const todoIndex = todos.findIndex((todo) => todo.id === id); // Todo not found
 
-  // Todo not found
   if (todoIndex === -1) {
     return Response.json(
       {
@@ -211,11 +129,9 @@ export async function DELETE(request) {
         status: 404,
       }
     );
-  }
+  } // Remove the todo
 
-  // Remove the todo
-  const deletedTodo = todos.splice(todoIndex, 1);
+  const deletedTodo = todos.splice(todoIndex, 1); // Return the deleted todo
 
-  // Return the deleted todo
   return Response.json(deletedTodo[0]);
 }
